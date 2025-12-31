@@ -1,0 +1,95 @@
+basePath: /
+definitions:
+  controllers.CaixaResponse:
+    properties:
+      caixa_id:
+        type: string
+      produtos:
+        items:
+          type: string
+        type: array
+    type: object
+  controllers.PackRequest:
+    properties:
+      pedidos:
+        items:
+          $ref: '#/definitions/models.Pedido'
+        type: array
+    type: object
+  controllers.PackResponse:
+    properties:
+      pedidos:
+        items:
+          $ref: '#/definitions/controllers.PedidoResponse'
+        type: array
+    type: object
+  controllers.PedidoResponse:
+    properties:
+      caixas:
+        items:
+          $ref: '#/definitions/controllers.CaixaResponse'
+        type: array
+      pedido_id:
+        type: integer
+    type: object
+  models.Dimensoes:
+    properties:
+      altura:
+        type: number
+      comprimento:
+        type: number
+      largura:
+        type: number
+    type: object
+  models.Pedido:
+    properties:
+      pedido_id:
+        type: integer
+      produtos:
+        items:
+          $ref: '#/definitions/models.Produto'
+        type: array
+    type: object
+  models.Produto:
+    properties:
+      dimensoes:
+        $ref: '#/definitions/models.Dimensoes'
+      produto_id:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  description: API para empacotamento de produtos em caixas
+  title: API de Empacotamento
+  version: "1.0"
+paths:
+  /pack:
+    post:
+      consumes:
+      - application/json
+      description: Recebe pedidos com produtos e retorna a alocação em caixas disponíveis
+      parameters:
+      - description: Lista de pedidos
+        in: body
+        name: pedidos
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.PackRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.PackResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Empacota produtos em caixas
+      tags:
+      - Empacotamento
+swagger: "2.0"

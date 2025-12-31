@@ -1,0 +1,147 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API para empacotamento de produtos em caixas",
+        "title": "API de Empacotamento",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8081",
+    "basePath": "/",
+    "paths": {
+        "/pack": {
+            "post": {
+                "description": "Recebe pedidos com produtos e retorna a alocação em caixas disponíveis",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Empacotamento"
+                ],
+                "summary": "Empacota produtos em caixas",
+                "parameters": [
+                    {
+                        "description": "Lista de pedidos",
+                        "name": "pedidos",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.PackRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.PackResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controllers.CaixaResponse": {
+            "type": "object",
+            "properties": {
+                "caixa_id": {
+                    "type": "string"
+                },
+                "produtos": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "controllers.PackRequest": {
+            "type": "object",
+            "properties": {
+                "pedidos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Pedido"
+                    }
+                }
+            }
+        },
+        "controllers.PackResponse": {
+            "type": "object",
+            "properties": {
+                "pedidos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controllers.PedidoResponse"
+                    }
+                }
+            }
+        },
+        "controllers.PedidoResponse": {
+            "type": "object",
+            "properties": {
+                "caixas": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controllers.CaixaResponse"
+                    }
+                },
+                "pedido_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Dimensoes": {
+            "type": "object",
+            "properties": {
+                "altura": {
+                    "type": "number"
+                },
+                "comprimento": {
+                    "type": "number"
+                },
+                "largura": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.Pedido": {
+            "type": "object",
+            "properties": {
+                "pedido_id": {
+                    "type": "integer"
+                },
+                "produtos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Produto"
+                    }
+                }
+            }
+        },
+        "models.Produto": {
+            "type": "object",
+            "properties": {
+                "dimensoes": {
+                    "$ref": "#/definitions/models.Dimensoes"
+                },
+                "produto_id": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
